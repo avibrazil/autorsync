@@ -1,0 +1,51 @@
+DEFAULTS:
+    source_part1: /media/Media
+    target_part1: /media/beast/filesets
+    delete: True
+    backup: True
+    backup_dir: ../deleted/{{time.strftime('%Y.%m.%d-%H.%M.%S')}}/
+    background: False
+
+
+
+profiles:
+    - name: photos
+      source_part2: Photos/
+      target_part2: fortal.photos/files
+
+
+    - name: photos.priv
+      source_part2: Photos.priv/
+      target_part2: fortal.photo.priv/files
+      simulate: True
+
+
+    - name: books
+      source_part2: Books/
+      target_part2: fortal.books/files
+      background: True
+
+
+    - name: music
+      source_part2: Musica/
+      target_part2: fortal.music/files
+
+
+    - name: podcasts
+      source_part2: Podcast/
+      target_part2: fortal.podcast/files
+
+
+    - name: dance
+      source_part2: Dance/
+      target_part2: fortal.dance/files
+
+
+    - name: nextcloud.data
+      source: /var/lib/nextcloud/data
+      target_part2: nextcloud.data/files
+
+
+    - name: jellyfin
+      source: /var/lib/jellyfin
+      target_part2: jellyfin/files
