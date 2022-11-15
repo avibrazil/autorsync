@@ -18,7 +18,7 @@ distutils.core.setup(
     python_requires         = '>=3.0',
     install_requires        = ['jinja2','pyyaml'],
     packages                = setuptools.find_packages(),
-    scripts                 = ['scripts/autorsync']
+    scripts                 = ['scripts/autorsync'],
 
     description             = "Automate execution of various rsync commands based " +
                               "on profiles defined on a YAML configuration file",

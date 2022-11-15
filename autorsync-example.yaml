@@ -1,51 +1,59 @@
 DEFAULTS:
     source_part1: /media/Media
     target_part1: /media/beast/filesets
+    background: False
     delete: True
     backup: True
+    
+    # Use Jinja replacements here. Doesn't need (double) quotes because ‘{’ is not in
+    # the beginning of string
     backup_dir: ../deleted/{{time.strftime('%Y.%m.%d-%H.%M.%S')}}/
-    background: False
 
 
 
 profiles:
     - name: photos
+    
+      # Do not forget your trailing slashes if you want them, they have meaning for
+      # rsync
       source_part2: Photos/
-      target_part2: fortal.photos/files
+      # In case of Jinja tags, put strings inside double quotes to avoid YAML
+      # interpreter handle it as JSON
+      target_part2: "{{hostname}}.photos/files"
 
 
     - name: photos.priv
       source_part2: Photos.priv/
-      target_part2: fortal.photo.priv/files
+      target_part2: '{{hostname}}.photos.priv/files'
       simulate: True
 
 
     - name: books
       source_part2: Books/
-      target_part2: fortal.books/files
+      target_part2: '{{hostname}}.books/files'
       background: True
 
 
     - name: music
       source_part2: Musica/
-      target_part2: fortal.music/files
+      target_part2: '{{hostname}}.music/files'
 
 
     - name: podcasts
       source_part2: Podcast/
-      target_part2: fortal.podcast/files
+      target_part2: '{{hostname}}.podcast/files'
 
 
     - name: dance
       source_part2: Dance/
-      target_part2: fortal.dance/files
+      target_part2: '{{hostname}}.dance/files'
 
 
     - name: nextcloud.data
       source: /var/lib/nextcloud/data
-      target_part2: nextcloud.data/files
+      target_part2: '{{hostname}}.nextcloud_files'
 
 
     - name: jellyfin
       source: /var/lib/jellyfin
-      target_part2: jellyfin/files
+      target_part2: '{{hostname}}.jellyfin'
