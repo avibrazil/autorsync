@@ -25,12 +25,12 @@ DEFAULTS:
 profiles:
     - name: books
       source_part2: Books/
-      target_part2: fortal.books/files
+      target_part2: '{{hostname}}.books/files'
       background: True
 
     - name: nextcloud.data
       source: /var/lib/nextcloud/data
-      target_part2: nextcloud.data/files
+      target_part2: '{{hostname}}.nextcloud_files'
 ```
 
 **Notes about this configuration**
@@ -40,8 +40,8 @@ the value defined in `DEFAULTS` will be used.
 - Target follows same logic: `target` or `target_part1/target_part2`
 - `delete` makes rsync delete files in target that are absent in source
 - `backup` and `backup_dir` makes rsync save backups on target of deleted or modified
-files. Value on `backup_dir` is a path relative to target folder and may contain code
-that will be replaced by Jinja.
+files. Value on `backup_dir` is a path relative to target folder
+- You can use Jinja logic in path parts, surrounded by `{{}}`. Currently available variables are `hostname` and `time`.
 
 ### Execution
 - Show all profiles:
@@ -55,6 +55,15 @@ autorsync
 - Run rsync only for profile `books`
 ```shell
 autorsync -p books
+```
+
+- Simulate rsync only for profile `books` (force rsync’s `--dry-run`)
+```shell
+autorsync -n -p books
+```
+or
+```shell
+autorsync --dry-run -p books
 ```
 
 - Run rsync for 2 profiles from a non-default configuration file:
