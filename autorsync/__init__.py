@@ -1,4 +1,5 @@
 import os
+import pwd
 import copy
 import datetime
 import platform
@@ -22,8 +23,21 @@ class RSyncProfile():
     background=False
     simulate=False
 
-    current_time=datetime.datetime.now()
-    hostname=platform.uname().node
+    # Databpool for Jinja as class variables to be available to all at once
+    datapool=dict(
+        time            = datetime.datetime.now(
+                            tz=(
+                                datetime.datetime.now(tz=datetime.timezone.utc)
+                                .astimezone()
+                                .tzinfo
+                            )
+        ),
+        hostname        = platform.uname().node,
+        username        = pwd.getpwuid(os.getuid()).pw_name,
+        userid          = pwd.getpwuid(os.getuid()).pw_uid,
+        gecos           = pwd.getpwuid(os.getuid()).pw_gecos,
+        home            = pwd.getpwuid(os.getuid()).pw_dir,
+    )
 
     as_str_template=(
         "{name}:\n" +
@@ -88,12 +102,12 @@ class RSyncProfile():
 
 
     def render(self,text):
-        datapool=dict(
-            time=self.current_time,
-            hostname=self.hostname,
-        )
+#         datapool=dict(
+#             time=self.current_time,
+#             hostname=self.hostname,
+#         )
 
-        return jinja2.Template(text).render(datapool)
+        return jinja2.Template(text).render(self.datapool)
 
 
 

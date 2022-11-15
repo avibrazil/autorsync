@@ -41,7 +41,13 @@ the value defined in `DEFAULTS` will be used.
 - `delete` makes rsync delete files in target that are absent in source
 - `backup` and `backup_dir` makes rsync save backups on target of deleted or modified
 files. Value on `backup_dir` is a path relative to target folder
-- You can use Jinja logic in path parts, surrounded by `{{}}`. Currently available variables are `hostname` and `time`.
+- You can use Jinja logic in path parts, surrounded by `{{}}`. Currently these are the available variables:
+    - `time`, a Python `datetime.datetime` object including local timezone
+    - `hostname`, such as “rocket”
+    - `username`, as “joanbaez”
+    - `home`, as “`/home/joanbaez`”
+    - `userid`, as “504”
+    - `gecos`, as “Joan Baez”
 
 ### Execution
 - Show all profiles:

@@ -1,5 +1,5 @@
 DEFAULTS:
-    source_part1: /media/Media
+    source_part1: '{{home}}/Media'
     target_part1: /media/beast/filesets
     background: False
     delete: True
