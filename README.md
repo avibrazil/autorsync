@@ -45,7 +45,7 @@ files. Value on `backup_dir` is a path relative to target folder
     - `time`, a Python `datetime.datetime` object including local timezone
     - `hostname`, such as “rocket”
     - `username`, as “joanbaez”
-    - `home`, as “`/home/joanbaez`”
+    - `home`, as “/home/joanbaez”
     - `userid`, as “504”
     - `gecos`, as “Joan Baez”
 
