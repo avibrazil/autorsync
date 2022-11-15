@@ -1,10 +1,13 @@
+#!/usr/bin/env python
+
+import distutils
 import setuptools
 from autorsync import __version__
 
 with open("README.md", "r", encoding="utf-8") as fh:
     long_description = fh.read()
 
-setuptools.setup(
+distutils.core.setup(
     name="autorsync",
     version=__version__,
     author="Avi Alkalay",

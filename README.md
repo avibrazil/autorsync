@@ -59,5 +59,5 @@ autorsync -p books
 
 - Run rsync for 2 profiles from a non-default configuration file:
 ```shell
-autorsync -c /etc/aursync.yaml -p "books, music, photos"
+autorsync -c /etc/autorsync.yaml -p "books, music, photos"
 ```
