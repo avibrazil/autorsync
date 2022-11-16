@@ -6,7 +6,7 @@ pypi-test:
 	python3 -m twine upload --repository-url https://test.pypi.org/legacy/ dist/*
 
 pypi:
-	python3 -m twine upload dist/*
+	python3 -m twine upload --verbose dist/*
 
 changelog:
 	f1=`mktemp`; \

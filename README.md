@@ -5,8 +5,9 @@ Command to automate execution of various rsync commands based on profiles define
 ## Installation
 
 ```shell
-pip3 install autorsync --user
+pip3 install auto-remote-sync --user
 ```
+(Sorry for the long package name, ideally this would be simply **autorsync**, but name `autosync` was already taken and PyPi would not allow similar names)
 
 ## Usage
 
@@ -15,7 +16,7 @@ Here is an example with some defaults and a few profiles:
 
 ```yaml
 DEFAULTS:
-    source_part1: /media/Media
+    source_part1: '{{home}}/Media'
     target_part1: user@remote.host.com:/media/backup/filesets
     delete: True
     backup: True

@@ -12,10 +12,10 @@ with open("README.md", "r", encoding="utf-8") as fh:
 
 
 distutils.core.setup(
-    name                    = "autorsync",
+    name                    = "auto_remote_sync",
     version                 = __version__,
 
-    python_requires         = '>=3.0',
+    python_requires         = '>=3.6',
     install_requires        = ['jinja2','pyyaml'],
     packages                = setuptools.find_packages(),
     scripts                 = ['scripts/autorsync'],
@@ -32,15 +32,14 @@ distutils.core.setup(
     classifiers             = [
                                 "Programming Language :: Python :: 3",
                                 "Operating System :: OS Independent",
-                                "Development Status :: 4 - Beta",
+                                "Development Status :: 5 - Production/Stable",
                                 "Environment :: MacOS X",
+                                "Environment :: Win32 (MS Windows)",
                                 "Environment :: Console",
-                                "Environment :: Linux",
-                                "Intended Audience :: Sysadmins",
+                                "Intended Audience :: System Administrators",
                                 "Intended Audience :: End Users/Desktop",
                                 "License :: OSI Approved :: GNU Library or Lesser General Public License (LGPL)",
                                 "Operating System :: MacOS",
-                                "Operating System :: iOS",
                                 "Operating System :: Microsoft :: Windows",
                                 "Operating System :: POSIX",
                                 "Operating System :: Unix",
