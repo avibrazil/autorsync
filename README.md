@@ -45,10 +45,10 @@ files. Value on `backup_dir` is a path relative to target folder
 - You can use Jinja logic in path parts, surrounded by `{{}}`. Currently these are the available variables:
     - `time`, a Python `datetime.datetime` object which includes local timezone
     - `hostname`, such as “rocket”
-    - `username`, as “joanbaez”
-    - `home`, as “/home/joanbaez”
-    - `userid`, as “504”
-    - `gecos`, as “Joan Baez”
+    - `username`, UNIX user name as “joanbaez”
+    - `home`, user’s home folder as “/home/joanbaez”
+    - `userid`, user ID as “504”
+    - `gecos`, user long name as “Joan Baez”
 
 ### Execution
 - Show all profiles:
