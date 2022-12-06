@@ -1,8 +1,9 @@
 # Created by pyp2rpm-3.3.8
-%global pypi_name autorsync
+%global pypi_name auto-remote-sync
 %global pypi_version 1.0.5
+%global pkg_name autorsync
 
-Name:           python-%{pypi_name}
+Name:           python-%{pkg_name}
 Version:        %{pypi_version}
 Release:        1%{?dist}
 Summary:        Automate execution of various rsync commands based on profiles defined on a YAML configuration file
@@ -19,13 +20,13 @@ BuildRequires:  python3dist(setuptools)
 Prepare your ~/autorsync.yaml file and do your everyday autorsyncs with short
 commands instead of long rsync commands.
 
-%package -n     python3-%{pypi_name}
+%package -n     python3-%{pkg_name}
 Summary:        %{summary}
-%{?python_provide:%python_provide python3-%{pypi_name}}
+%{?python_provide:%python_provide python3-%{pkg_name}}
 
 Requires:       python3dist(jinja2)
 Requires:       python3dist(pyyaml)
-%description -n python3-%{pypi_name}
+%description -n python3-%{pkg_name}
 Prepare your ~/autorsync.yaml file and do your everyday autorsyncs with short
 commands instead of long rsync commands.
 
@@ -41,7 +42,7 @@ rm -rf %{pypi_name}.egg-info
 %install
 %py3_install
 
-%files -n python3-%{pypi_name}
+%files -n python3-%{pkg_name}
 %license LICENSE
 %doc README.md
 %{_bindir}/autorsync
