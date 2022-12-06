@@ -4,7 +4,7 @@ DEFAULTS:
     background: False
     delete: True
     backup: True
-    
+
     # Use Jinja replacements here. Doesn't need (double) quotes because ‘{’ is not in
     # the beginning of string
     backup_dir: ../deleted/{{time.strftime('%Y.%m.%d-%H.%M.%S')}}/
@@ -13,7 +13,7 @@ DEFAULTS:
 
 profiles:
     - name: photos
-    
+
       # Do not forget your trailing slashes if you want them, they have meaning for
       # rsync
       source_part2: Photos/
