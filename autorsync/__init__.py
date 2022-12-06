@@ -135,6 +135,9 @@ class RSyncProfile():
             else:
                 raise NameError("undefined backup_dir")
 
+        if self.extra:
+            command+=[p.strip() for p in self.extra.split()]
+
         command.append(self.get_source())
         command.append(self.get_target())
 
