@@ -1,5 +1,5 @@
 # Created by pyp2rpm-3.3.8
-%global pypi_name auto-remote-sync
+%global pypi_name autorsync
 %global pypi_version 1.0.5
 
 Name:           python-%{pypi_name}
@@ -16,12 +16,8 @@ BuildRequires:  python3-devel
 BuildRequires:  python3dist(setuptools)
 
 %description
- Auto rsyncCommand to automate execution of various rsync commands based on
-profiles defined on a YAML configuration file.* **Instead of doing:** shell
-rsync -avySH --delete --backup --backup-dir../deleted/$timestamp/
-"/media/Media/Photos" "user@host.com:/media/backup/filesets/$hostname.photos"
-**Just do:** shell autorsync -p photos* **Instead of doing:** shell rsync
--avySH --delete --backup...
+Prepare your ~/autorsync.yaml file and do your everyday autorsyncs with short
+commands instead of long rsync commands.
 
 %package -n     python3-%{pypi_name}
 Summary:        %{summary}
@@ -30,12 +26,8 @@ Summary:        %{summary}
 Requires:       python3dist(jinja2)
 Requires:       python3dist(pyyaml)
 %description -n python3-%{pypi_name}
- Auto rsyncCommand to automate execution of various rsync commands based on
-profiles defined on a YAML configuration file.* **Instead of doing:** shell
-rsync -avySH --delete --backup --backup-dir../deleted/$timestamp/
-"/media/Media/Photos" "user@host.com:/media/backup/filesets/$hostname.photos"
-**Just do:** shell autorsync -p photos* **Instead of doing:** shell rsync
--avySH --delete --backup...
+Prepare your ~/autorsync.yaml file and do your everyday autorsyncs with short
+commands instead of long rsync commands.
 
 
 %prep
