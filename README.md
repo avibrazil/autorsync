@@ -33,7 +33,10 @@ everyday backups, or putting them in adhoc scripts, write the clear
 pip3 install auto-remote-sync --user
 ```
 (Sorry for the long package name, ideally this would be simply **autorsync**,
-but name `autosync` was already taken and PyPi would not allow similar names)
+but name `autosync` was already taken and PyPi would not allow similar names).
+
+Check [PyPi](https://pypi.org/project/auto-remote-sync/) and
+[GitHub](https://github.com/avibrazil/autorsync) for autorsync.
 
 ## Usage
 
