@@ -50,10 +50,10 @@ profiles:
 
 
     - name: nextcloud.data
-      source: /var/lib/nextcloud/data
-      target_part2: '{{hostname}}.nextcloud_files'
+      source: /var/lib/nextcloud/data/
+      target_part2: '{{hostname}}.nextcloud_files/files'
 
 
     - name: jellyfin
-      source: /var/lib/jellyfin
+      source: /var/lib/jellyfin/
       target_part2: '{{hostname}}.jellyfin'
