@@ -10,7 +10,7 @@ import yaml
 import jinja2
 
 
-__version__="1.0.5"
+__version__="1.0.6"
 
 
 __all__=['RSyncProfile', 'RSyncProfiles']
@@ -135,7 +135,7 @@ class RSyncProfile():
             else:
                 raise NameError("undefined backup_dir")
 
-        if self.extra:
+        if hasattr(self,'extra') and self.extra:
             command+=[p.strip() for p in self.extra.split()]
 
         command.append(self.get_source())
