@@ -21,3 +21,7 @@ clean:
 tgz: clean
 	cd ..; tar --exclude-vcs -czvf autorsync.tgz autorsync
 	
+rpm:
+	# RPM will be generated in ~/rpmbuild/RPMS/noarch
+	rpmbuild -ba --build-in-place autorsync.spec
+	
