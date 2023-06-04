@@ -32,7 +32,8 @@ class RSyncProfile():
                                 .tzinfo
                             )
         ),
-        hostname        = platform.uname().node,
+        hostname        = platform.node().split('.',1)[0],
+        Hostname        = platform.node(),
         username        = pwd.getpwuid(os.getuid()).pw_name,
         userid          = pwd.getpwuid(os.getuid()).pw_uid,
         gecos           = pwd.getpwuid(os.getuid()).pw_gecos,
