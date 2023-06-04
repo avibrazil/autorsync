@@ -77,6 +77,7 @@ folder
 are the available variables:
     - `time`, a Python `datetime.datetime` object which includes local timezone
     - `hostname`, such as “rocket”
+    - `Hostname`, such as “rocket.mydomain.com” (FQDN)
     - `username`, UNIX user name as “joanbaez”
     - `home`, user’s home folder as “/home/joanbaez”
     - `userid`, user ID as “504”

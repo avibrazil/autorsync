@@ -103,20 +103,18 @@ class RSyncProfile():
 
 
     def render(self,text):
-#         datapool=dict(
-#             time=self.current_time,
-#             hostname=self.hostname,
-#         )
-
         return jinja2.Template(text).render(self.datapool)
 
 
 
     def make_command(self,simulate=False):
         command=[
-            'rsync','--fuzzy','--sparse','--human-readable','--hard-links',
-            '--perms','--recursive','--times','--atimes','--open-noatime',
-            '--devices','--specials','--links','--mkpath','--verbose'
+            'rsync',
+            '--human-readable', '--fuzzy',   '--sparse',   '--hard-links',
+            '--recursive',      '--perms',   '--owner',    '--group',
+            '--executability',  '--times',   '--atimes',   '--acls',
+            '--open-noatime',   '--devices', '--specials', '--links',
+            '--mkpath',         '--verbose', '--xattrs',
         ]
 
         if self.simulate or simulate:
