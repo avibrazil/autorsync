@@ -16,7 +16,7 @@ changelog:
 	rm "$$f1" "$$f2"
 	
 clean:
-	-rm -rf auto_remote_sync.egg-info dist build autorsync/__pycache__ *dist-info *pyproject-* pyproject* .pyproject* .package_note*
+	-rm -rf auto_remote_sync.egg-info dist build autorsync/__pycache__ *dist-info *pyproject-* .pyproject* .package_note*
 	
 tgz: clean
 	cd ..; tar --exclude-vcs -czvf autorsync.tgz autorsync

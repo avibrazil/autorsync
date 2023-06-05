@@ -1,0 +1,41 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "auto_remote_sync"
+authors = [
+  { name="Avi Alkalay", email="avi@unix.sh" },
+]
+description = "Automate execution of various rsync commands based on profiles defined on a YAML configuration file"
+readme = "README.md"
+requires-python = ">=3.7"
+dependencies = ["jinja2","pyyaml"]
+classifiers = [
+        "Programming Language :: Python :: 3",
+        "Operating System :: OS Independent",
+        "Development Status :: 5 - Production/Stable",
+        "Environment :: MacOS X",
+        "Environment :: Win32 (MS Windows)",
+        "Environment :: Console",
+        "Intended Audience :: System Administrators",
+        "Intended Audience :: End Users/Desktop",
+        "License :: OSI Approved :: GNU Library or Lesser General Public License (LGPL)",
+        "Operating System :: MacOS",
+        "Operating System :: Microsoft :: Windows",
+        "Operating System :: POSIX",
+        "Operating System :: Unix",
+        "Topic :: System :: Archiving :: Backup",
+        "Topic :: System :: Recovery Tools"
+]
+dynamic = ["version"]
+
+[tool.setuptools.dynamic]
+version = {attr = "autorsync.__version__"}
+
+[project.scripts]
+autorsync = "tool:main"
+
+[project.urls]
+"Homepage" = "https://github.com/avibrazil/autorsync"
+"Bug Tracker" = "https://github.com/avibrazil/autorsync/issues"
