@@ -61,7 +61,7 @@ profiles:
     - name: nextcloud.data
       source: /var/lib/nextcloud/data
       target_part2: '{{hostname}}.nextcloud_files'
-      extra: "--copy-links --no-atimes --itemize-changes"
+      extra: --copy-links --no-atimes --itemize-changes
 ```
 
 **Notes about this configuration**
