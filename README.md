@@ -61,6 +61,7 @@ profiles:
     - name: nextcloud.data
       source: /var/lib/nextcloud/data
       target_part2: '{{hostname}}.nextcloud_files'
+      extra: "--copy-links --no-atimes --itemize-changes"
 ```
 
 **Notes about this configuration**
@@ -73,6 +74,8 @@ defined, by `source_part1/source_part2`
 - `backup` and `backup_dir` makes rsync save backups on target of deleted or
 modified files on source. Value on `backup_dir` is a path relative to target
 folder
+- `extra` lets you add extra rsync switches and can be used in the `DEFAULTS`
+section (to affect all profiles) or just into a specific profile.
 - You can use Jinja logic in path parts, surrounded by `{{}}`. Currently these
 are the available variables:
     - `time`, a Python `datetime.datetime` object which includes local timezone
