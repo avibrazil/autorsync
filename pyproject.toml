@@ -34,8 +34,10 @@ dynamic = ["version"]
 version = {attr = "autorsync.__version__"}
 
 [project.scripts]
-autorsync = "tool:main"
+autorsync = "autorsync.__main__:main"
 
 [project.urls]
 "Homepage" = "https://github.com/avibrazil/autorsync"
-"Bug Tracker" = "https://github.com/avibrazil/autorsync/issues"
+Source = "https://github.com/avibrazil/autorsync"
+Issues = "https://github.com/avibrazil/autorsync/issues/new/choose"
+Pypi = "https://pypi.org/project/auto-remote-sync"

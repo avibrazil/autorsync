@@ -3,6 +3,7 @@ import pwd
 import copy
 import datetime
 import platform
+import shlex
 import pathlib
 import subprocess
 import logging
@@ -10,7 +11,7 @@ import yaml
 import jinja2
 
 
-__version__="1.0.7"
+__version__="1.0.9"
 
 
 __all__=['RSyncProfile', 'RSyncProfiles']
@@ -135,7 +136,7 @@ class RSyncProfile():
                 raise NameError("undefined backup_dir")
 
         if hasattr(self,'extra') and self.extra:
-            command+=[p.strip() for p in self.extra.split()]
+            command+=[p.strip() for p in shlex.split(self.extra)]
 
         command.append(self.get_source())
         command.append(self.get_target())
