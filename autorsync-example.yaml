@@ -1,59 +1,161 @@
+# These are my actual off-site backup profiles.
+#
+# My NAS (Fedora 40) is backed up everyday to a remote OpenWRT machine with
+# attached external disk on its USB 2 port. It runs as root in source server.
+
+# The target machine is so limited and slow (64MB RAM, slow 32bit mips CPU,
+# USB 2), that I had to tweek a lot the target EXT4 filesystem, the SSH tunnel
+# and rsync parameters. Here is a list of tweaks that I can remember:
+#
+# - Create a small and slow 100MB swap file just to not let OpenWRT kernel crash
+# - Turn EXT4 into a 32bit filesystem, otherwise kernel will crash at some point
+#   of the transfer. Plug the target disk in strong machine and use tune2fs for
+#   this; the slow OpenWRT machine won't handle such conversion
+# - Select the fastest SSH cipher
+# - Turn SSH compression off
+# - Let rsync compress files but not all of them (autorsync has the list of
+#   extensions)
+#
+# Avi Alkalay
+# 2024-10-27
+#
+
 DEFAULTS:
-    source_part1: '{{home}}/Media'
-    target_part1: /media/beast/filesets
+    source_part1: '/media/Media'
+    target_part1: 'storage-beast.remote.offsite.host.com:/media/beast/filesets'
+    extra_part1: -e "ssh -T -c chacha20-poly1305@openssh.com -o Compression=no -x -i /root/.ssh/id_operator" --no-fuzzy --no-mkpath
+
     background: False
     delete: True
     backup: True
 
+    # When backup=True, save changed or deleted files in the backup_dir, relative to $target
     # Use Jinja replacements here. Doesn't need (double) quotes because ‘{’ is not in
-    # the beginning of string
+    # the beginning of string.
     backup_dir: ../deleted/{{time.strftime('%Y.%m.%d-%H.%M.%S')}}/
+
+
+    # Fastest SSH cipher was found with following script:
+    #
+    # host=storage-beast
+    # count=10
+    # for i in $(ssh -Q ciphers | while read row; do printf "$row "; done); do
+    # 	dd if=/dev/random bs=1000000 count=$count 2> /dev/null | ssh -c $i -T -o Compression=no -x -i /root/.ssh/id_operator $host "(time -p cat) > /dev/null" 2>&1 | grep real | awk '{print "'$i': "10 / $2" MB/s" }';
+    # done
+    #
+    # Results:
+    #
+    # aes128-ctr: 1.20482 MB/s
+    # aes192-ctr: 1.1274 MB/s
+    # aes256-ctr: 1.15875 MB/s
+    # aes128-gcm@openssh.com: 1.20192 MB/s
+    # aes256-gcm@openssh.com: 1.13507 MB/s
+    # chacha20-poly1305@openssh.com: 1.3459 MB/s
+    #
+    # So chacha20-poly1305 is the winner being 12% faster than aes128-ctr (2nd best) and
+    # 19% faster than aes192-ctr (slowest).
+
+
+
 
 
 
 profiles:
     - name: photos
 
-      # Do not forget your trailing slashes if you want them, they have meaning for
-      # rsync
+      # Do not forget your trailing slashes if you want them, they have meaning
+      # for rsync
       source_part2: Photos/
       # In case of Jinja tags, put strings inside double quotes to avoid YAML
       # interpreter handle it as JSON
       target_part2: "{{hostname}}.photos/files"
+      extra_part2: --no-acls --no-xattrs
 
 
     - name: photos.priv
       source_part2: Photos.priv/
       target_part2: '{{hostname}}.photos.priv/files'
-      simulate: True
+      extra_part2: --no-acls --no-xattrs
 
 
     - name: books
       source_part2: Books/
       target_part2: '{{hostname}}.books/files'
-      background: True
+      extra_part2: --no-acls --no-xattrs
 
 
     - name: music
       source_part2: Musica/
       target_part2: '{{hostname}}.music/files'
+      extra_part2: --no-acls --no-xattrs
 
 
     - name: podcasts
       source_part2: Podcast/
       target_part2: '{{hostname}}.podcast/files'
+      extra_part2: --no-acls --no-xattrs
 
 
     - name: dance
       source_part2: Dance/
       target_part2: '{{hostname}}.dance/files'
+      extra_part2: --no-acls --no-xattrs
 
+
+    - name: media
+      source: /media/Media/
+      target_part2: '{{hostname}}.media/files'
+      extra_part2: --one-file-system --exclude=Dance --exclude=Downloads --exclude=Podcast --no-acls --no-xattrs
+
+
+    - name: jellyfin.data
+      source: /var/lib/jellyfin/
+      target_part2: '{{hostname}}.jellyfin/files'
+      extra_part2: --no-acls --no-xattrs
+
+
+    - name: apache
+      source: /etc/httpd/conf.d
+      target: /home/myuser/Nextcloud/PlatformConfig/{{hostname}}-apache/ROOT/etc/httpd/
+      backup: False
+
+    - name: postfix
+      source: /etc/postfix
+      target: /home/myuser/Nextcloud/PlatformConfig/{{hostname}}-postfix/ROOT/etc/
+      backup: False
+
+    - name: nextcloud.config
+      source: /etc/nextcloud
+      target: /home/myuser/Nextcloud/PlatformConfig/{{hostname}}-nextcloud_config/ROOT/etc/
+      backup: False
+
+    - name: fstab
+      source: /etc/fstab
+      target: /home/myuser/Nextcloud/PlatformConfig/{{hostname}}-fstab/ROOT/etc/
+      backup: False
+
+    - name: davfs
+      source: /etc/davfs2
+      target: /home/myuser/Nextcloud/PlatformConfig/{{hostname}}-davfs/ROOT/etc/
+      backup: False
+
+    - name: jellyfin
+      source: /etc/jellyfin
+      target: /home/myuser/Nextcloud/PlatformConfig/{{hostname}}-jellyfin/ROOT/etc/
+      backup: False
+
+    - name: transmission
+      source: /var/lib/transmission
+      target: /home/myuser/Nextcloud/PlatformConfig/{{hostname}}-transmission/ROOT/var/lib/
+      backup: False
+
+    - name: crontabs
+      source: /var/spool/cron
+      target: /home/myuser/Nextcloud/PlatformConfig/{{hostname}}-crontabs/ROOT/var/spool/
+      backup: False
 
     - name: nextcloud.data
       source: /var/lib/nextcloud/data/
       target_part2: '{{hostname}}.nextcloud_files/files'
+      extra_part2: --exclude=myuser/files/Backup/ --exclude=myuser/files_versions/Backup --no-acls --no-xattrs 
 
-
-    - name: jellyfin
-      source: /var/lib/jellyfin/
-      target_part2: '{{hostname}}.jellyfin'
