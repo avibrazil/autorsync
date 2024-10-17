@@ -11,7 +11,7 @@ import yaml
 import jinja2
 
 
-__version__="1.0.9"
+__version__="1.1"
 
 
 __all__=['RSyncProfile', 'RSyncProfiles']
@@ -57,6 +57,15 @@ class RSyncProfile():
         for name, value in data.items():
             setattr(self, name, self._wrap(value))
 
+        multi_part_params='source target extra'.split()
+        parts=[1,2]
+
+        for param in multi_part_params:
+            for part in parts:
+                working_on=f"{param}_part{part}"
+                if not hasattr(self,working_on):
+                    setattr(self,working_on,'')
+
 
 
     def _wrap(self, value):
@@ -68,8 +77,11 @@ class RSyncProfile():
 
 
     def get_source(self):
-        # Can't use pathlib here because it strips down trailing slashes that are soooo
-        # important to rsync
+        """Process the 'source' and 'source_part1'+'source_part2' profile
+        parameters"""
+
+        # Can't use pathlib here because it strips down trailing slashes that
+        # are soooo important to rsync
         if hasattr(self,'source'):
             path = self.source
         else:
@@ -81,6 +93,9 @@ class RSyncProfile():
 
 
     def get_target(self):
+        """Process the 'target' and 'target_part1'+'target_part2' profile
+        parameters"""
+
         # Can't use pathlib here because it strips down trailing slashes that are soooo
         # important to rsync
         if hasattr(self,'target'):
@@ -90,6 +105,22 @@ class RSyncProfile():
 
         # Resolve Jinja tags
         return self.render(path)
+
+
+
+    def get_extra(self):
+        """Process the 'extra' and 'extra_part1'+'extra_part2' profile
+        parameters"""
+
+        # Can't use pathlib here because it strips down trailing slashes that are soooo
+        # important to rsync
+        if hasattr(self,'extra'):
+            params = self.extra
+        else:
+            params = self.extra_part1 + ' ' + self.extra_part2
+
+        # Resolve Jinja tags and split parameters in the Shell style
+        return [p.strip() for p in shlex.split(self.render(params))]
 
 
 
@@ -111,11 +142,16 @@ class RSyncProfile():
     def make_command(self,simulate=False):
         command=[
             'rsync',
+
+            # The "rsync -a" suite in a verbose way:
+            '--recursive',      '--links',   '--perms',    '--times',
+            '--owner',          '--group',   '--devices',  '--specials',
+
+            # More useful parameters
             '--human-readable', '--fuzzy',   '--sparse',   '--hard-links',
-            '--recursive',      '--perms',   '--owner',    '--group',
-            '--executability',  '--times',   '--atimes',   '--acls',
-            '--open-noatime',   '--devices', '--specials', '--links',
-            '--mkpath',         '--verbose', '--xattrs',
+            '--executability',  '--atimes',  '--acls',     '--xattrs',
+            '--open-noatime',   '--mkpath',  '--verbose',  '--compress',
+            '--skip-compress=7z/apk/avi/bz2/cab/deb/dmg/gz/flac/heif/heic/jar/jpg/JPG/jpeg/JPEG/m4a/m4v/mkv/mov/mp3/mp4/mpeg/mpg/mpv/oga/ogg/ogv/opus/pack/png/qt/rar/rpm/sfx/svgz/tgz/tlz/txz/vob/webm/webp/wma/wmv/xz/z/zip'
         ]
 
         if self.simulate or simulate:
@@ -135,9 +171,7 @@ class RSyncProfile():
             else:
                 raise NameError("undefined backup_dir")
 
-        if hasattr(self,'extra') and self.extra:
-            command+=[p.strip() for p in shlex.split(self.extra)]
-
+        command+=self.get_extra()
         command.append(self.get_source())
         command.append(self.get_target())
 
