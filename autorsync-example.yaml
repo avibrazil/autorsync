@@ -111,7 +111,7 @@ profiles:
     - name: jellyfin.data
       source: /var/lib/jellyfin/
       target_part2: '{{hostname}}.jellyfin/files'
-      extra_part2: --no-acls --no-xattrs
+      extra_part2: --no-acls --no-xattrs --exclude=metadata/ --exclude=data/subtitles/ --exclude=data/keyframes/ --exclude=data/ScheduledTasks/ --exclude=.aspnet/ --exclude=.cache/ --exclude=transcodes/
 
 
     - name: apache
