@@ -25,7 +25,7 @@ defined on a YAML configuration file.
     ```
 Or, in more general terms, instead of doing long rsync commands for your
 everyday backups, or putting them in adhoc scripts, write the clear
-[`~/autorsync.yaml`](#yamlfile) file and let `autorsync` to the work for you.
+[`~/autorsync.yaml`](#yamlfile) file and let `autorsync` do the work for you.
 
 ## Installation
 
@@ -51,17 +51,19 @@ DEFAULTS:
     backup: True
     backup_dir: ../deleted/{{time.strftime('%Y.%m.%d-%H.%M.%S')}}/
     background: False
+    extra_part1: -e "ssh -i ~/.ssh/id_operator" --no-atimes
 
 profiles:
     - name: books
       source_part2: Books/
       target_part2: '{{hostname}}.books/files'
       background: True
+      extra: --copy-links
 
     - name: nextcloud.data
       source: /var/lib/nextcloud/data
       target_part2: '{{hostname}}.nextcloud_files'
-      extra: --copy-links --no-atimes --itemize-changes
+      extra_part2: --copy-links --itemize-changes
 ```
 
 **Notes about this configuration**
@@ -75,9 +77,11 @@ defined, by `source_part1/source_part2`
 modified files on source. Value on `backup_dir` is a path relative to target
 folder
 - `extra` lets you add extra rsync switches and can be used in the `DEFAULTS`
-section (to affect all profiles) or just into a specific profile.
-- You can use Jinja logic in path parts, surrounded by `{{}}`. Currently these
-are the available variables:
+section (to affect all profiles) or just into a specific profile. You can also
+use `extra_part1` and `extra_part2` between profiles and `DEFAULTS`, which will
+cause your switches to be concatenated.
+- You can use Jinja logic in `source*`, `target*` and `extra*` parts, surrounded
+by `{{}}`. Currently these are the available variables:
     - `time`, a Python `datetime.datetime` object which includes local timezone
     - `hostname`, such as “rocket”
     - `Hostname`, such as “rocket.mydomain.com” (FQDN)
@@ -85,6 +89,18 @@ are the available variables:
     - `home`, user’s home folder as “/home/joanbaez”
     - `userid`, user ID as “504”
     - `gecos`, user long name as “Joan Baez”
+
+Se [my real `/root/autorsync.yaml` file](https://github.com/avibrazil/autorsync/blob/main/autorsync-example.yaml)
+that is used everyday to run my incremental offsite backup via cron.
+
+By the way, this is my root user crontab:
+
+```
+# Several backups everyday 4:15 AM
+15 4 * * * $HOME/.local/bin/autorsync
+```
+
+As simple as that.
 
 ### Example usage
 - Show all profiles:
@@ -100,7 +116,7 @@ are the available variables:
     autorsync -p books
     ```
 
-- Simulate rsync only for profile `books` (force rsync’s `--dry-run`)  
+- Simulate rsync only for profile `books` (force rsync’s `--dry-run`)
     ```shell
     autorsync -n -p books
     ```
