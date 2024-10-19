@@ -8,6 +8,9 @@ pypi-test:
 pypi:
 	python3 -m twine upload --verbose dist/*
 
+example:
+	./obfuscate.sed < autorsync.yaml > autorsync-example.yaml
+
 changelog:
 	f1=`mktemp`; \
 	f2=`mktemp`; \

@@ -1,7 +1,7 @@
 # These are my actual off-site backup profiles.
 #
 # My NAS (Fedora 40) is backed up everyday to a remote OpenWRT machine with
-# attached external disk on its USB 2 port. It runs as root in source server.
+# attached external disk on its USB 2 port.
 
 # The target machine is so limited and slow (64MB RAM, slow 32bit mips CPU,
 # USB 2), that I had to tweek a lot the target EXT4 filesystem, the SSH tunnel
@@ -20,15 +20,15 @@
 # 2024-10-27
 #
 
+
 DEFAULTS:
     source_part1: '/media/Media'
-    target_part1: 'storage-beast.remote.offsite.host.com:/media/beast/filesets'
-    extra_part1: -e "ssh -T -c chacha20-poly1305@openssh.com -o Compression=no -x -i /root/.ssh/id_operator" --no-fuzzy --no-mkpath
+    target_part1: 'obfuscated.hostname.com:/media/beast/filesets'
+    extra_part1: --rsh "ssh -T -c chacha20-poly1305@openssh.com -o Compression=no -x -i /root/.ssh/id_operator"  --no-acls --no-xattrs --no-fuzzy --no-mkpath
 
     background: False
     delete: True
     backup: True
-
     # When backup=True, save changed or deleted files in the backup_dir, relative to $target
     # Use Jinja replacements here. Doesn't need (double) quotes because ‘{’ is not in
     # the beginning of string.
@@ -37,10 +37,9 @@ DEFAULTS:
 
     # Fastest SSH cipher was found with following script:
     #
-    # host=storage-beast
-    # count=10
+    # host=obfuscated.hostname.com
     # for i in $(ssh -Q ciphers | while read row; do printf "$row "; done); do
-    # 	dd if=/dev/random bs=1000000 count=$count 2> /dev/null | ssh -c $i -T -o Compression=no -x -i /root/.ssh/id_operator $host "(time -p cat) > /dev/null" 2>&1 | grep real | awk '{print "'$i': "10 / $2" MB/s" }';
+    # 	dd if=/dev/random bs=1000000 count=10 2> /dev/null | ssh -c $i -T -o Compression=no -x -i /root/.ssh/id_operator $host "(time -p cat) > /dev/null" 2>&1 | grep real | awk '{print "'$i': "10 / $2" MB/s" }';
     # done
     #
     # Results:
@@ -63,99 +62,101 @@ DEFAULTS:
 profiles:
     - name: photos
 
-      # Do not forget your trailing slashes if you want them, they have meaning
-      # for rsync
+      # Do not forget your trailing slashes if you want them, they have meaning for
+      # rsync
       source_part2: Photos/
       # In case of Jinja tags, put strings inside double quotes to avoid YAML
       # interpreter handle it as JSON
       target_part2: "{{hostname}}.photos/files"
-      extra_part2: --no-acls --no-xattrs
 
 
     - name: photos.priv
       source_part2: Photos.priv/
       target_part2: '{{hostname}}.photos.priv/files'
-      extra_part2: --no-acls --no-xattrs
 
 
     - name: books
       source_part2: Books/
       target_part2: '{{hostname}}.books/files'
-      extra_part2: --no-acls --no-xattrs
 
 
     - name: music
       source_part2: Musica/
       target_part2: '{{hostname}}.music/files'
-      extra_part2: --no-acls --no-xattrs
 
 
     - name: podcasts
       source_part2: Podcast/
       target_part2: '{{hostname}}.podcast/files'
-      extra_part2: --no-acls --no-xattrs
 
 
     - name: dance
       source_part2: Dance/
       target_part2: '{{hostname}}.dance/files'
-      extra_part2: --no-acls --no-xattrs
 
 
     - name: media
       source: /media/Media/
       target_part2: '{{hostname}}.media/files'
-      extra_part2: --one-file-system --exclude=Dance --exclude=Downloads --exclude=Podcast --no-acls --no-xattrs
+      extra_part2: --one-file-system --exclude=Dance --exclude=Downloads --exclude=Podcast
 
 
     - name: jellyfin.data
       source: /var/lib/jellyfin/
       target_part2: '{{hostname}}.jellyfin/files'
-      extra_part2: --no-acls --no-xattrs --exclude=metadata/ --exclude=data/subtitles/ --exclude=data/keyframes/ --exclude=data/ScheduledTasks/ --exclude=.aspnet/ --exclude=.cache/ --exclude=transcodes/
+      extra_part2: --exclude=metadata/ --exclude=data/subtitles/ --exclude=data/keyframes/ --exclude=data/ScheduledTasks/ --exclude=.aspnet/ --exclude=.cache/ --exclude=transcodes/
 
 
     - name: apache
       source: /etc/httpd/conf.d
-      target: /home/myuser/Nextcloud/PlatformConfig/{{hostname}}-apache/ROOT/etc/httpd/
+      target: /home/obfuscated_username/Nextcloud/PlatformConfig/{{hostname}}-apache/ROOT/etc/httpd/
+      extra_part2: --copy-links
       backup: False
 
     - name: postfix
       source: /etc/postfix
-      target: /home/myuser/Nextcloud/PlatformConfig/{{hostname}}-postfix/ROOT/etc/
+      target: /home/obfuscated_username/Nextcloud/PlatformConfig/{{hostname}}-postfix/ROOT/etc/
+      extra_part2: --copy-links
       backup: False
 
     - name: nextcloud.config
       source: /etc/nextcloud
-      target: /home/myuser/Nextcloud/PlatformConfig/{{hostname}}-nextcloud_config/ROOT/etc/
+      target: /home/obfuscated_username/Nextcloud/PlatformConfig/{{hostname}}-nextcloud_config/ROOT/etc/
+      extra_part2: --copy-links
       backup: False
 
     - name: fstab
       source: /etc/fstab
-      target: /home/myuser/Nextcloud/PlatformConfig/{{hostname}}-fstab/ROOT/etc/
+      target: /home/obfuscated_username/Nextcloud/PlatformConfig/{{hostname}}-fstab/ROOT/etc/
+      extra_part2: --copy-links
       backup: False
 
     - name: davfs
       source: /etc/davfs2
-      target: /home/myuser/Nextcloud/PlatformConfig/{{hostname}}-davfs/ROOT/etc/
+      target: /home/obfuscated_username/Nextcloud/PlatformConfig/{{hostname}}-davfs/ROOT/etc/
+      extra_part2: --copy-links
       backup: False
 
     - name: jellyfin
       source: /etc/jellyfin
-      target: /home/myuser/Nextcloud/PlatformConfig/{{hostname}}-jellyfin/ROOT/etc/
+      target: /home/obfuscated_username/Nextcloud/PlatformConfig/{{hostname}}-jellyfin/ROOT/etc/
+      extra_part2: --copy-links
       backup: False
 
     - name: transmission
       source: /var/lib/transmission
-      target: /home/myuser/Nextcloud/PlatformConfig/{{hostname}}-transmission/ROOT/var/lib/
+      target: /home/obfuscated_username/Nextcloud/PlatformConfig/{{hostname}}-transmission/ROOT/var/lib/
+      extra_part2: --copy-links
       backup: False
 
     - name: crontabs
       source: /var/spool/cron
-      target: /home/myuser/Nextcloud/PlatformConfig/{{hostname}}-crontabs/ROOT/var/spool/
+      target: /home/obfuscated_username/Nextcloud/PlatformConfig/{{hostname}}-crontabs/ROOT/var/spool/
+      extra_part2: --copy-links
       backup: False
 
     - name: nextcloud.data
       source: /var/lib/nextcloud/data/
       target_part2: '{{hostname}}.nextcloud_files/files'
-      extra_part2: --exclude=myuser/files/Backup/ --exclude=myuser/files_versions/Backup --no-acls --no-xattrs 
+      extra_part2: --exclude=obfuscated_username/files/Backup/ --exclude=obfuscated_username/files_versions/Backup
 
