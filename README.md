@@ -51,7 +51,7 @@ DEFAULTS:
     backup: True
     backup_dir: ../deleted/{{time.strftime('%Y.%m.%d-%H.%M.%S')}}/
     background: False
-    extra_part1: -e "ssh -i ~/.ssh/id_operator" --no-atimes
+    extra_part1: --rsh "ssh -i ~/.ssh/id_operator" --no-atimes
 
 profiles:
     - name: books
