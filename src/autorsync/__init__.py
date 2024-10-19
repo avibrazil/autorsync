@@ -256,7 +256,7 @@ class RSyncProfiles():
             if p in self._profiles:
                 self._profiles[p].run(simulate=simulate)
             else:
-                logger.warning(f'Can’t find profile “{p}” to execute.')
+                self.logger.warning(f'Can’t find profile “{p}” to execute.')
 
 
 
