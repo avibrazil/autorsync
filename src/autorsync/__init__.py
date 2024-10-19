@@ -11,7 +11,7 @@ import yaml
 import jinja2
 
 
-__version__="1.1"
+__version__="1.1.1"
 
 
 __all__=['RSyncProfile', 'RSyncProfiles']
