@@ -96,7 +96,7 @@ def main():
         logger=prepare_logging()
 
 
-    profiles=autorsync.RSyncProfiles(args.config_file)
+    profiles=autorsync.RSyncProfiles(args.config_file,args.debug)
 
 
     if args.list:

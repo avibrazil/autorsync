@@ -11,7 +11,7 @@ import yaml
 import jinja2
 
 
-__version__="1.1.1"
+__version__="1.2"
 
 
 __all__=['RSyncProfile', 'RSyncProfiles']
@@ -41,18 +41,23 @@ class RSyncProfile():
         home            = pwd.getpwuid(os.getuid()).pw_dir,
     )
 
-    as_str_template=(
+    as_str_template_verbose=(
         "{name}:\n" +
         "   source: {source}\n" +
         "   target: {target}\n" +
         "   command: {command}\n"
     )
 
+    as_str_template=(
+        "{name}:\n" +
+        "   source: {source}\n" +
+        "   target: {target}\n"
+    )
 
-
-    def __init__(self, data):
+    def __init__(self, data, verbose=False):
         # Setup logging
         self.logger = logging.getLogger(__name__ + '.' + self.__class__.__name__)
+        self.verbose=verbose
 
         for name, value in data.items():
             setattr(self, name, self._wrap(value))
@@ -96,8 +101,8 @@ class RSyncProfile():
         """Process the 'target' and 'target_part1'+'target_part2' profile
         parameters"""
 
-        # Can't use pathlib here because it strips down trailing slashes that are soooo
-        # important to rsync
+        # Can't use pathlib here because it strips down trailing slashes that
+        # are soooo important to rsync
         if hasattr(self,'target'):
             path = self.target
         else:
@@ -112,8 +117,8 @@ class RSyncProfile():
         """Process the 'extra' and 'extra_part1'+'extra_part2' profile
         parameters"""
 
-        # Can't use pathlib here because it strips down trailing slashes that are soooo
-        # important to rsync
+        # Can't use pathlib here because it strips down trailing slashes that
+        # are soooo important to rsync
         if hasattr(self,'extra'):
             params = self.extra
         else:
@@ -125,7 +130,8 @@ class RSyncProfile():
 
 
     def __str__(self):
-        return self.as_str_template.format(
+        tpl=self.as_str_template_verbose if self.verbose else self.as_str_template
+        return tpl.format(
             name=self.name,
             source=self.get_source(),
             target=self.get_target(),
@@ -202,7 +208,7 @@ class RSyncProfiles():
 
 
 
-    def __init__(self,config_or_config_file):
+    def __init__(self,config_or_config_file, verbose=False):
         # Setup logging
         self.logger = logging.getLogger(__name__ + '.' + self.__class__.__name__)
 
@@ -227,7 +233,7 @@ class RSyncProfiles():
         for p in config['profiles']:
             config=copy.deepcopy(defaults)
             config.update(p)
-            self._profiles[p['name']]=RSyncProfile(config)
+            self._profiles[p['name']]=RSyncProfile(config, verbose)
 
 
 
