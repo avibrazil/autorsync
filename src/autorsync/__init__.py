@@ -11,7 +11,8 @@ import yaml
 import jinja2
 
 
-__version__="1.2"
+
+__version__="2.0"
 
 
 __all__=['RSyncProfile', 'RSyncProfiles']
@@ -59,7 +60,13 @@ class RSyncProfile():
         self.logger = logging.getLogger(__name__ + '.' + self.__class__.__name__)
         self.verbose=verbose
 
+        # Initialize pre and post scripts for later cleaner code
+        self.before=None
+        self.after=None
+        self.env=None
+
         for name, value in data.items():
+            self.logger.debug(f"{name}: {value}")
             setattr(self, name, self._wrap(value))
 
         multi_part_params='source target extra'.split()
@@ -74,7 +81,7 @@ class RSyncProfile():
 
 
     def _wrap(self, value):
-        if isinstance(value, (tuple, list, set, frozenset, dict)):
+        if isinstance(value, (tuple, list, set, frozenset)):
             return type(value)([self._wrap(v) for v in value])
         else:
             return value
@@ -188,6 +195,18 @@ class RSyncProfile():
     def run(self, simulate=False):
         self.logger.info('Execute sync profile {}'.format(str(self)))
 
+        if self.before:
+            self.logger.debug('Before rsync: {}'.format(self.before))
+
+            if simulate is False:
+                subprocess.run(
+                    self.before,
+                    shell=True,
+                    env=self.env,
+                    check=True,
+                    executable="/bin/bash"
+                )
+
         command_items=self.make_command(simulate=simulate)
 
         self.logger.debug('Command: ' + ' '.join([str(x) for x in command_items]))
@@ -196,6 +215,17 @@ class RSyncProfile():
             universal_newlines=True,
         )
 
+        if self.after:
+            self.logger.debug('After rsync: {}'.format(self.after))
+
+            if simulate is False:
+                subprocess.run(
+                    self.after,
+                    shell=True,
+                    env=self.env,
+                    check=True,
+                    executable="/bin/bash"
+                )
 
 
 class RSyncProfiles():

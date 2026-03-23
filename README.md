@@ -64,6 +64,20 @@ profiles:
       source: /var/lib/nextcloud/data
       target_part2: '{{hostname}}.nextcloud_files'
       extra_part2: --copy-links --itemize-changes
+
+    - name: navidrome.data
+      env:
+          NAVI_DB: /var/lib/navidrome/data/navidrome.db
+      before: |
+          systemctl stop navidrome
+          sqlite3 $NAVI_DB "PRAGMA wal_checkpoint(FULL); PRAGMA wal_checkpoint(TRUNCATE); PRAGMA journal_mode=DELETE; vacuum;"
+      after: |
+          sqlite3 $NAVI_DB "PRAGMA journal_mode=WAL;"
+          systemctl restart navidrome
+      source: /var/lib/navidrome/
+      target_part2: '{{hostname}}.navidrome/files'
+      extra_part2: --exclude=cache/
+
 ```
 
 **Notes about this configuration**
@@ -80,6 +94,10 @@ folder
 section (to affect all profiles) or just into a specific profile. You can also
 use `extra_part1` and `extra_part2` between profiles and `DEFAULTS`, which will
 cause your switches to be concatenated.
+- `before` and `after` are shell scripts to be executed before and after rsync
+command.
+- `env` is a list of environment variables that will be set for `before` and
+`after` scripts.
 - You can use Jinja logic in `source*`, `target*` and `extra*` parts, surrounded
 by `{{}}`. Currently these are the available variables:
     - `time`, a Python `datetime.datetime` object which includes local timezone
