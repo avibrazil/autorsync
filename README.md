@@ -78,6 +78,15 @@ profiles:
       target_part2: '{{hostname}}.navidrome/files'
       extra_part2: --exclude=cache/
 
+    - name: databases
+      before: |
+        TARGET=/path/to/db-backup/`date --rfc-3339=date`
+        mkdir -p "$TARGET"
+        runuser -u postgres -- psql --csv -t -c "SELECT datname FROM pg_database WHERE datistemplate=false;" | while read db; do
+           runuser -u postgres -- pg_dump -F c "$db" | gzip -c --best > "$TARGET/$db.sql.gz"
+        done
+      source: /home/aviram/Backup/databases/
+      target_part2: '{{hostname}}-databases/'
 ```
 
 **Notes about this configuration**
