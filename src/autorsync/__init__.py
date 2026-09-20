@@ -12,7 +12,7 @@ import jinja2
 
 
 
-__version__="2.0.1"
+__version__="2.2"
 
 
 __all__=['RSyncProfile', 'RSyncProfiles']
@@ -64,6 +64,7 @@ class RSyncProfile():
         self.before=None
         self.after=None
         self.env=None
+        self.continue_on_script_error=True
 
         for name, value in data.items():
             self.logger.debug(f"{name}: {value}")
@@ -97,7 +98,7 @@ class RSyncProfile():
         if hasattr(self,'source'):
             path = self.source
         else:
-            path = self.source_part1 + os.sep + self.source_part2
+            path = self.source_part1 + self.source_part2
 
         # Resolve Jinja tags
         return self.render(path)
@@ -113,7 +114,7 @@ class RSyncProfile():
         if hasattr(self,'target'):
             path = self.target
         else:
-            path = self.target_part1 + os.sep + self.target_part2
+            path = self.target_part1 + self.target_part2
 
         # Resolve Jinja tags
         return self.render(path)
@@ -203,7 +204,7 @@ class RSyncProfile():
                     self.before,
                     shell=True,
                     env=self.env,
-                    check=True,
+                    check=(not self.continue_on_script_error),
                     executable="/bin/bash"
                 )
 
@@ -223,7 +224,7 @@ class RSyncProfile():
                     self.after,
                     shell=True,
                     env=self.env,
-                    check=True,
+                    check=(not self.continue_on_script_error),
                     executable="/bin/bash"
                 )
 
